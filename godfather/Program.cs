@@ -11,7 +11,7 @@
 		{
 			var timer = new Timer();
 			timer.Elapsed += DownloadSourceCode;
-			timer.Interval = 900000;
+			timer.Interval = 5000;//900000;
 			timer.Enabled = true;
 
 			Console.WriteLine("Press \'q\' to quit the sample.");
@@ -22,20 +22,25 @@
 
 		private static void DownloadSourceCode(object source, ElapsedEventArgs e)
 		{
-			using (var client = new WebClient() 
+			DownloadHttp("gibip.de");
+			DownloadHttp("heise.de");
+		}
+
+		private static void DownloadHttp(string host) 
+		{
+			using (var client = new WebClient()
 			{
 				Proxy = new WebProxy("192.168.178.37:8118")
 			})
 			{
 				var dateTime = DateTime.UtcNow;
-
-				client.DownloadFile("http://gibip.de", "./gibip.de/" + dateTime.ToFileTimeUtc() + ".html");
-				var ipAddress = File.ReadAllLines("./gibip.de/" + dateTime.ToFileTimeUtc() + ".html");
-				Console.WriteLine(dateTime.ToLongTimeString() + ": " + ipAddress[0]);
-
-				client.DownloadFile("http://heise.de", "./heise.de/" + dateTime.ToFileTimeUtc() + ".html");
-				//var srcCode = File.ReadAllText("./heise.de/" + dateTime.ToFileTimeUtc() + ".html");
-				//Console.WriteLine(srcCode);
+				client.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
+				client.DownloadFile("http://" + host, "./" + host + "/" + dateTime.ToFileTimeUtc() + ".html");
+				var content = File.ReadAllText("./" + host + "/" + dateTime.ToFileTimeUtc() + ".html");
+				if (string.IsNullOrWhiteSpace(content))
+					Console.WriteLine("ERROR: " + host);
+				else
+					Console.WriteLine("Success: " + host);
 			}
 		}
 	}

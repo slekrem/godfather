@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "godfather", "godfather\godfather.csproj", "{CF95A6C4-8901-43CD-8264-2E8B26019FA2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BDB216C3-F8E8-4DB8-B4A6-2DE14F4A5372}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "godfather.dal", "godfather\godfather.dal\godfather.dal.csproj", "{893DBDD0-6B1A-412B-823A-378F8EBD359A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,5 +17,13 @@ Global
 		{CF95A6C4-8901-43CD-8264-2E8B26019FA2}.Debug|x86.Build.0 = Debug|x86
 		{CF95A6C4-8901-43CD-8264-2E8B26019FA2}.Release|x86.ActiveCfg = Release|x86
 		{CF95A6C4-8901-43CD-8264-2E8B26019FA2}.Release|x86.Build.0 = Release|x86
+		{893DBDD0-6B1A-412B-823A-378F8EBD359A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{893DBDD0-6B1A-412B-823A-378F8EBD359A}.Debug|x86.Build.0 = Debug|Any CPU
+		{893DBDD0-6B1A-412B-823A-378F8EBD359A}.Release|x86.ActiveCfg = Release|Any CPU
+		{893DBDD0-6B1A-412B-823A-378F8EBD359A}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CF95A6C4-8901-43CD-8264-2E8B26019FA2} = {BDB216C3-F8E8-4DB8-B4A6-2DE14F4A5372}
+		{893DBDD0-6B1A-412B-823A-378F8EBD359A} = {BDB216C3-F8E8-4DB8-B4A6-2DE14F4A5372}
 	EndGlobalSection
 EndGlobal
