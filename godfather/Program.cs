@@ -16,6 +16,7 @@
 		public static void Main(string[] args)
 		{
 			_client.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
+			_client.DownloadProgressChanged += (sender, e) => Console.WriteLine("BytesReceived: " + e.BytesReceived);
 			
 			var timer = new Timer();
 			timer.Elapsed += DownloadSourceCode;
@@ -35,7 +36,7 @@
 		private static void DownloadHttp(string host) 
 		{
 			var dateTime = DateTime.UtcNow;
-			_client.DownloadFile("http://" + host, "./" + host + "/" + dateTime.ToFileTimeUtc() + ".html");
+			_client.DownloadFileAsync(new Uri("http://" + host), "./" + host + "/" + dateTime.ToFileTimeUtc() + ".html");
 			var content = File.ReadAllText("./" + host + "/" + dateTime.ToFileTimeUtc() + ".html");
 			if (string.IsNullOrWhiteSpace(content))
 				Console.WriteLine("ERROR: " + host);
