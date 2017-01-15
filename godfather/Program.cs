@@ -2,6 +2,7 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.IO;
 	using System.Net;
 	using System.Net.Http;
 	using System.Text.RegularExpressions;
@@ -33,14 +34,27 @@
 				var content = AccessTheWebAsync(url);
 				content.Wait();
 				if (string.IsNullOrWhiteSpace(content.Result))
-					Console.WriteLine("ERROR: " + url);
+					continue;
+				SaveContent(url, content.Result);
+
+				/*
 				var newUrls = GetUrlsFromContent(content.Result, url);
 				foreach (var newUrl in newUrls) 
 				{
 					Console.WriteLine(newUrl);
 				}
-
+				*/
 			}
+		}
+
+		private static void SaveContent(string path, string content) 
+		{
+			if (string.IsNullOrWhiteSpace(path))
+				throw new ArgumentNullException("path");
+
+			if(!Directory.Exists(path))
+				Directory.CreateDirectory(path);
+			File.WriteAllText(path + "/" + DateTime.Now.ToFileTimeUtc() + ".html", content);
 		}
 
 		private static async Task<string> AccessTheWebAsync(string requestUri)
