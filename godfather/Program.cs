@@ -13,7 +13,7 @@
 	{
 		public static void Main(string[] args)
 		{
-			using (var timer = new Timer(StartCrawling, null, 0, 60000)) 
+			using (var timer = new Timer(StartCrawling, null, 0, 600000)) 
 			{
 				Console.WriteLine("Press \'q\' to quit the sample.");
 				while (Console.Read() != 'q') { }
