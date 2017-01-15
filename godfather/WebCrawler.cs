@@ -17,7 +17,7 @@ namespace godfather
 		private async Task<string> AccessTheWebAsync(string requestUri)
 		{
 			if (string.IsNullOrWhiteSpace(requestUri))
-				throw new ArgumentNullException(nameof(requestUri));
+				throw new ArgumentNullException("requestUri");
 
 			var content = string.Empty;
 			using (var httpClient = new HttpClient())

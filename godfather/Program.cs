@@ -21,7 +21,7 @@
 		private static void StartCrawling(object state)
 		{
 			var urls = new[] 
-			{ 
+			{
 				"http://heise.de",
 				"http://swp.de",
 				"http://gibip.de"
@@ -45,7 +45,7 @@
 		private static async Task<string> AccessTheWebAsync(string requestUri)
 		{
 			if (string.IsNullOrWhiteSpace(requestUri))
-				throw new ArgumentNullException(nameof(requestUri));
+				throw new ArgumentNullException("requestUri");
 
 			var content = string.Empty;
 			using (var httpClient = new HttpClient() { })
