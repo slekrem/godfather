@@ -51,7 +51,7 @@
 			var content = string.Empty;
 			using (var httpClient = new HttpClient(new HttpClientHandler()
 			{
-				Proxy = new WebProxy("localhost", 8118),
+				Proxy = new WebProxy("192.168.2.102", 8118),
 				UseProxy = true
 			}) { })
 				content = await httpClient.GetStringAsync(requestUri);
