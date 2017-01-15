@@ -1,47 +1,91 @@
 ﻿namespace godfather
 {
 	using System;
-	using System.IO;
-	using System.Net;
-	using System.Timers;
+	using System.Collections.Generic;
+	using System.Net.Http;
+	using System.Text.RegularExpressions;
+	using System.Threading;
+	using System.Threading.Tasks;
 
 	class MainClass
 	{
-		private static WebClient _client = new WebClient() 
-		{
-			Proxy = new WebProxy("192.168.178.37:8118")
-		};
-
-
 		public static void Main(string[] args)
 		{
-			_client.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
-			_client.DownloadProgressChanged += (sender, e) => Console.WriteLine("BytesReceived: " + e.BytesReceived);
-			
-			var timer = new Timer();
-			timer.Elapsed += DownloadSourceCode;
-			timer.Interval = 5000;//900000;
-			timer.Enabled = true;
-
-			Console.WriteLine("Press \'q\' to quit the sample.");
-			while (Console.Read() != 'q') { }
+			using (var timer = new Timer(StartCrawling, null, 0, 60000)) 
+			{
+				Console.WriteLine("Press \'q\' to quit the sample.");
+				while (Console.Read() != 'q') { }
+			}
 		}
 
-		private static void DownloadSourceCode(object source, ElapsedEventArgs e)
+		private static void StartCrawling(object state)
 		{
-			//DownloadHttp("gibip.de");
-			DownloadHttp("heise.de");
+			var urls = new[] 
+			{ 
+				"http://heise.de",
+				"http://swp.de",
+				"http://gibip.de"
+			};
+
+			foreach (var url in urls) 
+			{
+				var content = AccessTheWebAsync(url);
+				content.Wait();
+				if (string.IsNullOrWhiteSpace(content.Result))
+					Console.WriteLine("ERROR: " + url);
+				var newUrls = GetUrlsFromContent(content.Result, url);
+				foreach (var newUrl in newUrls) 
+				{
+					Console.WriteLine(newUrl);
+				}
+
+			}
 		}
 
-		private static void DownloadHttp(string host) 
+		private static async Task<string> AccessTheWebAsync(string requestUri)
 		{
-			var dateTime = DateTime.UtcNow;
-			_client.DownloadFileAsync(new Uri("http://" + host), "./" + host + "/" + dateTime.ToFileTimeUtc() + ".html");
-			var content = File.ReadAllText("./" + host + "/" + dateTime.ToFileTimeUtc() + ".html");
+			if (string.IsNullOrWhiteSpace(requestUri))
+				throw new ArgumentNullException(nameof(requestUri));
+
+			var content = string.Empty;
+			using (var httpClient = new HttpClient() { })
+				content = await httpClient.GetStringAsync(requestUri);
+			return content;
+		}
+
+		private static IEnumerable<string> GetUrlsFromContent(string content, string startUrl) 
+		{
 			if (string.IsNullOrWhiteSpace(content))
-				Console.WriteLine("ERROR: " + host);
-			else
-				Console.WriteLine("Success: " + host);
+				return new List<string>();
+			
+			string linkedUrl;
+			var urlList = new List<string>();
+			var regexLink = new Regex("(?<=<a\\s*?href=(?:'|\"))[^'\"]*?(?=(?:'|\"))");
+			foreach (var match in regexLink.Matches(content))
+			{
+				if (!urlList.Contains(match.ToString()))
+				{
+					linkedUrl = GetLinkedUrl(match.ToString(), startUrl);
+					urlList.Add(linkedUrl);
+				}
+			}
+			return urlList;
+		}
+
+		private static string GetLinkedUrl(string url, string startUrl)
+		{
+			if (!url.Contains("http://"))
+			{
+				if (url.IndexOf('/', 0) != -1)
+				{
+					url = startUrl + url;
+				}
+				else
+				{
+					url = startUrl + "/" + url;
+				}
+			}
+			return url;
 		}
 	}
 }
