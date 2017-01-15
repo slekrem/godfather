@@ -49,7 +49,11 @@
 				throw new ArgumentNullException("requestUri");
 			ServicePointManager.ServerCertificateValidationCallback += (o, certificate, chain, errors) => true;
 			var content = string.Empty;
-			using (var httpClient = new HttpClient() { })
+			using (var httpClient = new HttpClient(new HttpClientHandler()
+			{
+				Proxy = new WebProxy("localhost", 8118),
+				UseProxy = true
+			}) { })
 				content = await httpClient.GetStringAsync(requestUri);
 			return content;
 		}

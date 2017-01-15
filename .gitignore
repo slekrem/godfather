@@ -4,3 +4,5 @@ godfather/bin
 godfather/obj
 *.user
 packages
+godfather/godfather.dal/bin
+godfather/godfather.dal/obj
