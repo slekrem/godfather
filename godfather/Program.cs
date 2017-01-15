@@ -2,6 +2,7 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Net;
 	using System.Net.Http;
 	using System.Text.RegularExpressions;
 	using System.Threading;
@@ -46,7 +47,7 @@
 		{
 			if (string.IsNullOrWhiteSpace(requestUri))
 				throw new ArgumentNullException("requestUri");
-
+			ServicePointManager.ServerCertificateValidationCallback += (o, certificate, chain, errors) => true;
 			var content = string.Empty;
 			using (var httpClient = new HttpClient() { })
 				content = await httpClient.GetStringAsync(requestUri);
